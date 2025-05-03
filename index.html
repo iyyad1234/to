@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Master - Level Up Your Productivity</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="user-stats">
+                <div class="avatar">
+                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='35' r='20' fill='%23333'/><circle cx='50' cy='100' r='40' fill='%23333'/></svg>" alt="Avatar" id="user-avatar">
+                </div>
+                <div class="level-info">
+                    <span id="current-username" style="display:block; font-weight:bold; color:#4CAF50; margin-bottom:2px;"></span>
+                    <span>Level <span id="user-level">1</span></span>
+                    <div class="xp-bar">
+                        <div class="xp-progress" id="xp-progress"></div>
+                    </div>
+                    <span id="xp-count">0/100 XP</span>
+                </div>
+            </div>
+            <div class="new-task">
+                <input type="text" id="task-input" placeholder="Add a new task...">
+                <button id="add-task-btn"><i class="fas fa-plus"></i></button>
+            </div>
+            <div class="auth-buttons">
+                <button id="open-auth-modal" style="margin-left: 20px; padding: 8px 16px; background: #4CAF50; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Sign In / Sign Up</button>
+                <button id="signout-btn" style="margin-left: 10px; padding: 8px 16px; background: #e53e3e; color: #fff; border: none; border-radius: 5px; cursor: pointer; display: none;">Sign Out</button>
+                <button id="open-skills-modal" style="margin-left: 10px; padding: 8px 16px; background: #2196F3; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Skills</button>
+            </div>
+        </header>
+
+        <div class="task-board">
+            <div class="column" id="todo-column">
+                <h2>To Do</h2>
+                <div class="tasks" id="todo-tasks"></div>
+            </div>
+            <div class="column" id="in-progress-column">
+                <h2>In Progress</h2>
+                <div class="tasks" id="in-progress-tasks"></div>
+            </div>
+            <div class="column" id="completed-column">
+                <h2>Completed</h2>
+                <div class="tasks" id="completed-tasks"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="level-up-animation" class="hidden">
+        <div class="level-up-content">
+            <h2>Level Up!</h2>
+            <p>You've reached level <span id="new-level">2</span>!</p>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000;">
+        <div style="background: #fff; padding: 32px 24px; border-radius: 10px; min-width: 320px; max-width: 90vw; position: relative;">
+            <button id="close-auth-modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                <button id="tab-signin" style="margin-right: 10px; padding: 6px 18px; border: none; border-radius: 5px 5px 0 0; background: #eee; cursor: pointer;">Sign In</button>
+                <button id="tab-signup" style="padding: 6px 18px; border: none; border-radius: 5px 5px 0 0; background: #eee; cursor: pointer;">Sign Up</button>
+            </div>
+            <form id="signin-form">
+                <input type="text" id="signin-username" placeholder="Username or Email" required style="width: 100%; margin-bottom: 12px; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                <input type="password" id="signin-password" placeholder="Password" required style="width: 100%; margin-bottom: 12px; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                <button type="submit" style="width: 100%; background: #4CAF50; color: #fff; border: none; border-radius: 5px; padding: 10px; font-size: 16px; cursor: pointer;">Sign In</button>
+            </form>
+            <form id="signup-form" class="hidden">
+                <input type="text" id="signup-username" placeholder="Username or Email" required style="width: 100%; margin-bottom: 12px; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                <input type="password" id="signup-password" placeholder="Password" required style="width: 100%; margin-bottom: 12px; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                <button type="submit" style="width: 100%; background: #4CAF50; color: #fff; border: none; border-radius: 5px; padding: 10px; font-size: 16px; cursor: pointer;">Sign Up</button>
+            </form>
+            <div id="auth-message" style="color: #e53e3e; margin-top: 10px; text-align: center;"></div>
+        </div>
+    </div>
+
+    <!-- Skills Modal -->
+    <div id="skills-modal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2100;">
+        <div style="background: #fff; padding: 32px 24px; border-radius: 10px; min-width: 320px; max-width: 90vw; position: relative;">
+            <button id="close-skills-modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
+            <h2 style="text-align:center; margin-bottom: 16px;">Skills</h2>
+            <div style="text-align:center; margin-bottom: 16px;">
+                Skill Points: <span id="skill-points">0</span>
+            </div>
+            <div id="skills-list">
+                <!-- Skills will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
